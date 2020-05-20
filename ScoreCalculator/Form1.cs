@@ -24,11 +24,9 @@ namespace ScoreCalculator
          * Extra Exercise 8-1 Display Test Scores Array 
          * *******************************************************************/
 
-
         int total = 0;
         int count = 0;
         int[] scoresArray = new int[20];    //class variable that hold up to 20 scores              
-
         private void btnAdd_Click(object sender, EventArgs e)
         {
             try
@@ -52,11 +50,9 @@ namespace ScoreCalculator
                 //message box
                 MessageBox.Show(ex.Message + "\n\n" +
                ex.GetType().ToString() + "\n" +
-               ex.StackTrace, "Exception"); 
-            }
-            
+               ex.StackTrace, "Exception - Out of Range Array Index"); 
+            }        
         }
-
         public bool IsValidData()
         {
             return
@@ -70,7 +66,7 @@ namespace ScoreCalculator
         {
             if (textBox.Text == "")
             {
-                MessageBox.Show(name + " is a required field.", "Entry Error");
+                MessageBox.Show(name + " is a required field.", "Error - Empty Texbox");
                 textBox.Focus();
                 return false;
             }
@@ -86,7 +82,7 @@ namespace ScoreCalculator
             }
             else
             {
-                MessageBox.Show(name + " must be a valid integer.", "Entry Error");
+                MessageBox.Show(name + " must be a valid integer.", "Error - Invalid Number");
                 textBox.Focus();
                 return false;
             }
@@ -99,7 +95,7 @@ namespace ScoreCalculator
             if (number < min || number > max)
             {
                 MessageBox.Show(name + " must be between " + min +
-                    " and " + max + ".", "Entry Error");
+                    " and " + max + ".", "Error - Number Out of Range");
                 textBox.Focus();
                 return false;
             }
@@ -107,17 +103,25 @@ namespace ScoreCalculator
         }
         private void btnDisplay_Click(object sender, EventArgs e)
         {
-            //sort scores in array
-            Array.Sort(scoresArray);
-            string scoresString = "";
-            foreach (int i in scoresArray)
-                if (i != 0)
-                {
-                    scoresString += i.ToString() + "\n";
-                }
-            //message box showing sorted scores
-            MessageBox.Show(scoresString, "Sorted Scores");
-            //move focus to Score textbox
+            if (scoresArray[0] < 1) // check if scoresArray has a value yet
+            {
+                MessageBox.Show("Nothing to Display \nPlease add score values"
+                    , "Empty Array", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                //sort scores in array
+                Array.Sort(scoresArray);
+                string scoresString = "";
+                foreach (int i in scoresArray)
+                    if (i != 0)
+                    {
+                        scoresString += i.ToString() + "\n";
+                    }
+                //message box showing sorted scores
+                MessageBox.Show(scoresString, "Sorted Scores");
+            }
+            //move focus back to Score textbox
             txtScore.Focus();
         }
         private void btnClear_Click(object sender, EventArgs e)
@@ -134,12 +138,17 @@ namespace ScoreCalculator
             //create new array and assign it to array variable
             scoresArray = new int[20]; 
         }
-
         private void btnExit_Click(object sender, EventArgs e)
         {
-            this.Close();
-        }
-        //exits the application
+            //confirm user wants to exit application
+            DialogResult answer = MessageBox.Show("Exit Application?", "Confirm to Exit"
+                , MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
 
+            if (answer == DialogResult.Yes)  // if user clicked 'Yes' to exit
+            {
+                this.Close();  //exits the application
+            }
+            txtScore.Focus();
+        }
     }
 }
